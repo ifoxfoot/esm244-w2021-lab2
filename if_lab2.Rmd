@@ -43,3 +43,40 @@ autoplot(penguin_pca, data = penguin_complete, colour = "species", loadings = TR
 
 ```
 
+## Part 2: ggplot customization & reading in different file types
+
+#### read in an .xlsx
+
+```{r}
+fish_noaa <- read_excel(here("data", "foss_landings.xlsx")) %>%
+  clean_names() %>%
+  mutate(across(where(is.character), tolower)) %>% 
+  mutate(nmfs_name = str_sub(nmfs_name, end = -4)) %>% 
+  filter(confidentiality == "public")
+```
+
+Make a customized graph:
+
+```{r}
+fish_plot <- ggplot(data = fish_noaa, aes(x = year, y = pounds)) + geom_line(aes(color = nmfs_name), show.legend = FALSE) + theme_minimal()
+
+fish_plot
+ggplotly(fish_plot)
+
+### Use gghighlight to highlight certian series
+
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name)) + geom_line() + theme_minimal() + 
+  gghighlight(nmfs_name == "tunas")
+
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name)) + geom_line(aes(color = nmfs_name)) + theme_minimal() + 
+  gghighlight(max(pounds) > 1e8)
+
+```
+
+### Read in dat from a URL. Then use `lubridate()`, `mutate()`, make a graph with months in logical order.
+
+```{r}
+monroe_wt <- read_csv("https://data.bloomington.in.gov/dataset/2c81cfe3-62c2-46ed-8fcf-83c1880301d1/resource/e80a7601-69c9-4ec6-bc1b-64a162e8c330/download/dillmanmonthlyelectricitybills.csv") %>% 
+  clean_names()
+```
+
