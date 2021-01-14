@@ -103,6 +103,6 @@ graph_c <- (graph_a | graph_b)/ fish_plot & theme_minimal()
 
 graph_c
   
-ggsave(here("fig", "graph_c_if.png", width = 5, height = 6))
+ggsave(here("fig", "graph_if.png"))
 ```
 
